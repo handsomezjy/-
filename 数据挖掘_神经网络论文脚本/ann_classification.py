@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 class ANNClassifier:
     def __init__(self, hidden_layer_sizes=(30, 30), eta=0.01, max_iter=500, tol=0.001):
@@ -48,7 +50,8 @@ class ANNClassifier:
         delta_list   = [None] * layer_n
 
         # 随机梯度下降
-        idx = np.arange(m)
+        idx = np.arange(m)#起点0，步长1，终点m
+        error = []
         for _ in range(self.max_iter):
             # 随机打乱训练集
             np.random.shuffle(idx)
@@ -84,12 +87,18 @@ class ANNClassifier:
             # 计算训练误差.
             y_pred = self._predict(X, W_list)
             err = self._error(y, y_pred)
+            error.append(err)
 
             # 判断收敛(误差是否小于阈值)
             if err < self.tol:
                 break
 
             print('%4s. err: %s' % (_+1, err))
+            
+        plt.plot(np.squeeze(error))
+        plt.ylabel("error")
+        plt.xlabel("iterations(500)")
+        plt.show()
 
         # 返回训练好的权矩阵列表
         return W_list
